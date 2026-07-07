@@ -25,6 +25,7 @@ make check
 make inspect
 make generate-check
 make generate
+make interactive
 make snapshot
 make render
 ```
@@ -33,8 +34,11 @@ Edit `newdata.txt` as the human-readable source for newer processor rows, then
 run `make generate` to append newly added rows to the chart `.dat` files while
 preserving the existing hand-tuned data. `make generate-rebuild-check` shows the
 larger diff that would result from fully normalizing the derived sections.
-Rendered outputs are copied to `output/rendered/`. The `patches/` directory is
-for staging newer processor rows before appending them to `newdata.txt`.
+`make interactive` builds a self-contained HTML file and standalone SVG under
+`output/interactive/` with hover/focus details for named processor rows.
+Rendered gnuplot outputs are copied to `output/rendered/`. The `patches/`
+directory is for staging newer processor rows before appending them to
+`newdata.txt`.
 
 ### License
 
