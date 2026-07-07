@@ -394,6 +394,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         f"""
         const pointData = {json.dumps(point_data, separators=(",", ":"))};
         const metricLabels = {json.dumps({key: value["label"] for key, value in SERIES.items()}, separators=(",", ":"))};
+        const metricTooltipLabels = {{...metricLabels, transistors: "Transistors"}};
         const svg = document.currentScript.ownerSVGElement;
         const tooltip = svg.getElementById("tooltip-panel");
         const svgNS = "{NS}";
@@ -432,13 +433,18 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
           }};
         }}
 
+        function metricTooltipValue(point) {{
+          if (point.metric === "transistors") return point.details.transistors;
+          return Number(point.value).toLocaleString();
+        }}
+
         function showTooltip(target) {{
           const id = target.dataset.pointId;
           const point = pointData[id];
           if (!point) return;
           const details = point.details;
           const rows = [
-            `${{metricLabels[point.metric]}}: ${{Number(point.value).toLocaleString()}}`,
+            `${{metricTooltipLabels[point.metric]}}: ${{metricTooltipValue(point)}}`,
             `Year: ${{details.year}}`,
             `Transistors: ${{details.transistors}}`,
             `Frequency: ${{details.frequency}}`,
