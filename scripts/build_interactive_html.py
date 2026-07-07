@@ -5,12 +5,13 @@ import argparse
 import html
 import json
 import math
-from decimal import Decimal
+import re
+from dataclasses import dataclass
+from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
-from generate_dat import ProcessorRow, format_decimal, metric_value, parse_newdata
-
 NS = "http://www.w3.org/2000/svg"
+YEAR_RE = re.compile(r"^\d{4}\.\d+$")
 
 SERIES = {
     "cores": {
@@ -64,6 +65,19 @@ PLOT_H = 424
 LEGEND_X = 812
 
 
+@dataclass
+class ProcessorRow:
+    name: str
+    year_token: str
+    chart_year: Decimal
+    transistors: str
+    specint: str
+    frequency: str
+    tdp: str
+    threads: str
+    note: str = ""
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Build embeddable interactive HTML/SVG charts from newdata.txt."
@@ -73,6 +87,59 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--chart-dir", default="50yrs")
     parser.add_argument("--out-dir", type=Path, default=Path("output/interactive"))
     return parser.parse_args()
+
+
+def chart_year(year_token: str, seen: dict[str, int]) -> Decimal:
+    year, suffix = year_token.split(".", 1)
+    if len(suffix) == 2 and suffix.isdigit() and 1 <= int(suffix) <= 12:
+        value = Decimal(year) + (Decimal(suffix) / Decimal(12))
+    else:
+        value = Decimal(year_token)
+
+    base = value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    key = f"{base:.2f}"
+    offset = seen.get(key, 0)
+    seen[key] = offset + 1
+    return base + (Decimal("0.01") * offset)
+
+
+def format_decimal(value: Decimal) -> str:
+    text = format(value.normalize(), "f")
+    return text[:-2] if text.endswith(".0") else text
+
+
+def parse_newdata(path: Path) -> list[ProcessorRow]:
+    rows: list[ProcessorRow] = []
+    seen_years: dict[str, int] = {}
+
+    for line_number, line in enumerate(path.read_text().splitlines(), start=1):
+        content, _, comment = line.partition("#")
+        content = content.strip()
+        if not content:
+            continue
+
+        tokens = content.split()
+        year_index = next((i for i, token in enumerate(tokens) if YEAR_RE.match(token)), None)
+        if year_index is None:
+            continue
+        if len(tokens) < year_index + 6:
+            raise SystemExit(f"{path}:{line_number}: expected six fields after processor name")
+
+        rows.append(
+            ProcessorRow(
+                name=" ".join(tokens[:year_index]),
+                year_token=tokens[year_index],
+                chart_year=chart_year(tokens[year_index], seen_years),
+                transistors=tokens[year_index + 1],
+                specint=tokens[year_index + 2],
+                frequency=tokens[year_index + 3],
+                tdp=tokens[year_index + 4],
+                threads=tokens[year_index + 5],
+                note=comment.strip(),
+            )
+        )
+
+    return rows
 
 
 def parse_dat(path: Path) -> list[tuple[float, float]]:
@@ -89,6 +156,14 @@ def parse_dat(path: Path) -> list[tuple[float, float]]:
         except ValueError:
             continue
     return points
+
+
+def metric_value(row: ProcessorRow, field: str, scale: Decimal) -> str | None:
+    raw = getattr(row, field)
+    if raw == "??":
+        return None
+
+    return format_decimal(Decimal(raw) * scale)
 
 
 def known_metric(row: ProcessorRow, key: str) -> float | None:

@@ -1,17 +1,12 @@
 SHELL := /usr/bin/env bash
 ROOT := $(shell pwd)
 
-.PHONY: help check inspect generate generate-check generate-rebuild-check interactive snapshot render clean
+.PHONY: help check inspect interactive snapshot render clean
 
 help:
 	@echo "Targets:"
 	@echo "  make check     Check required tools"
 	@echo "  make inspect   Print repo structure"
-	@echo "  make generate  Rebuild .dat files from newdata.txt"
-	@echo "  make generate-check"
-	@echo "                 Show generator diffs without writing"
-	@echo "  make generate-rebuild-check"
-	@echo "                 Show full normalization diffs without writing"
 	@echo "  make interactive"
 	@echo "                 Build embeddable interactive HTML/SVG"
 	@echo "  make snapshot  Copy current data into output/data-snapshot"
@@ -23,15 +18,6 @@ check:
 
 inspect:
 	python3 ./scripts/inspect_repo.py "$(ROOT)"
-
-generate:
-	python3 ./scripts/generate_dat.py --repo "$(ROOT)"
-
-generate-check:
-	python3 ./scripts/generate_dat.py --repo "$(ROOT)" --check
-
-generate-rebuild-check:
-	python3 ./scripts/generate_dat.py --repo "$(ROOT)" --check --rebuild
 
 interactive:
 	python3 ./scripts/build_interactive_html.py --repo "$(ROOT)"
