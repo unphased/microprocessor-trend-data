@@ -207,7 +207,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         .cpu-point { cursor: pointer; stroke: #ffffff; stroke-width: 1.5; transition: r 120ms ease, opacity 120ms ease, stroke-width 120ms ease; }
         .cpu-point:hover, .cpu-point:focus, .cpu-point.is-active { r: 6.5; opacity: 1; stroke-width: 2; outline: none; }
         .cpu-point.is-related { r: 5.5; opacity: 1; }
-        #tooltip-panel { filter: drop-shadow(0 8px 20px rgba(30, 35, 40, 0.18)); }
+        #tooltip-panel { filter: drop-shadow(0 8px 20px rgba(30, 35, 40, 0.18)); pointer-events: none; }
         .tooltip-box { fill: #ffffff; stroke: #aeb6c2; stroke-width: 1; }
         .tooltip-title { fill: #1f2328; font-size: 13px; font-weight: 700; }
         .tooltip-line { fill: #343a40; font-size: 11px; }
@@ -342,6 +342,21 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
           return Math.max(min, Math.min(max, value));
         }}
 
+        function placeTooltip(cx, cy, width, height) {{
+          const gap = 22;
+          const margin = 12;
+          const rightSpace = {WIDTH} - cx;
+          const leftSpace = cx;
+          const preferLeft = rightSpace < width + gap + margin && leftSpace > rightSpace;
+          const x = preferLeft ? cx - width - gap : cx + gap;
+          const preferAbove = cy > {HEIGHT} * 0.62;
+          const y = preferAbove ? cy - height - gap : cy + gap;
+          return {{
+            x: clamp(x, margin, {WIDTH} - width - margin),
+            y: clamp(y, margin, {HEIGHT} - height - margin)
+          }};
+        }}
+
         function showTooltip(target) {{
           const id = target.dataset.pointId;
           const point = pointData[id];
@@ -368,8 +383,9 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
           const cy = Number(target.getAttribute("cy"));
           const boxWidth = 260;
           const boxHeight = 42 + rows.length * 17;
-          const x = clamp(cx + 14, 12, {WIDTH} - boxWidth - 12);
-          const y = clamp(cy - 24, 12, {HEIGHT} - boxHeight - 12);
+          const position = placeTooltip(cx, cy, boxWidth, boxHeight);
+          const x = position.x;
+          const y = position.y;
           const rect = document.createElementNS(svgNS, "rect");
           rect.setAttribute("x", x);
           rect.setAttribute("y", y);
