@@ -446,12 +446,12 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
           const rows = [
             `${{metricTooltipLabels[point.metric]}}: ${{metricTooltipValue(point)}}`,
             `Year: ${{details.year}}`,
-            `Transistors: ${{details.transistors}}`,
             `Frequency: ${{details.frequency}}`,
             `SpecInt: ${{details.specint}}`,
             `Power: ${{details.power}}`,
             `Logical cores: ${{details.cores}}`
           ];
+          if (point.metric !== "transistors") rows.splice(2, 0, `Transistors: ${{details.transistors}}`);
           if (details.note) rows.push(details.note);
 
           svg.querySelectorAll(".cpu-point").forEach((el) => {{
