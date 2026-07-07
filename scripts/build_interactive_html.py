@@ -19,7 +19,7 @@ SERIES = {
         "file": "cores.dat",
         "field": "threads",
         "scale": Decimal("1"),
-        "color": "#202124",
+        "color": "#8a3ffc",
         "unit": "",
     },
     "frequency": {
