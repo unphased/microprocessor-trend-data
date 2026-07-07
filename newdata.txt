@@ -40,3 +40,12 @@ Xeon Pl. 8380  2021.03  ??             105.3      2.3         290    80      # S
 M1 Max         2021.08  57.0           ??         3.2          30    10
 Instinct MI250   2021.09  58.2           ??         1.0         500    208     # GPU; 208 compute units
 Graviton 3     2021.09  55.0           ??         2.6         100    64
+Epyc 9654      2022.11  ??             ??         2.4         360    192     # AMD EPYC Genoa
+Xeon Max 9480  2023.01  ??             ??         1.9         350    112     # Intel Sapphire Rapids HBM
+Epyc 9754      2023.06  ??             ??         2.25        360    256     # AMD EPYC Bergamo
+M3 Max         2023.10  ??             ??         ??          ??     16
+Xeon 8592+     2023.12  ??             ??         1.9         350    128     # Intel Emerald Rapids
+Xeon 6980P     2024.09  ??             ??         2.0         500    256     # Intel Granite Rapids
+Epyc 9965      2024.10  ??             ??         2.25        500    384     # AMD EPYC Turin
+M4 Max         2024.10  ??             ??         ??          ??     16
+Epyc 9575F     2025.03  ??             ??         3.3         400    128     # AMD EPYC Turin high-frequency
