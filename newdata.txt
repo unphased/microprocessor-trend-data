@@ -14,38 +14,53 @@ Xeon E7-8870   2011.04  2.6            39.4       2.4         130    20
 Opteron 4284   2011.11  1.2            33.6       3.0          95     8
 Opteron 6284SE 2012.05  2.4            31.8       3.1         140    16
 Xeon E5-2690   2012.05  2.3            59.0       2.9         130    16      # http://www.anandtech.com/show/5553/the-xeon-e52600-dual-sandybridge-for-servers/2
-Power7+ 780    2012.08  2.1            ??         3.7         200    32      # TDP: http://arstechnica.com/civis/viewtopic.php?f=8&t=40992
+Power7+ 780    2012.08  2.1            34.8       3.7         200    32
 Opteron 6380   2012.11  1.2            33.7       2.5         115    16
-Xeon Phi       2013.05  5.0            ??         1.2         300    240
+Xeon Phi 7120P  2013.05  5.0    ??    1.238  300   244   # Corrected identity: 7120P is 61 cores × 4 threads; Intel ARK. I did not find an official SPEC CPU2006 submission for this Knights Corner SKU.
+Power8 S814     2014.06  4.2    55.6  3.724  200    64   # 1780 SPECint_rate_base2006 / 32 cores = 55.625, from IBM POWER8 3.724 GHz submission. This is a same-clock POWER8 reference result, not specifically an S814 submission.
+Xeon Phi 7290   2016.06  ??     15.8  1.5    245   288   # 1140 SPECint_rate_base2006 / 72 cores = 15.833. Corrected threads: 72 cores × 4 = 288.
+Power8          2016.08  8.0    57.8  4.0    ??     96   # 11100 SPECint_rate_base2006 / 192 cores = 57.8125, from IBM Power E880 4.0 GHz POWER8 submission; same chip class / clock.
 Xeon E5-2697v2 2013.09  4.3            59.6       2.7         130    24      # http://wccftech.com/intel-announces-ivy-bridge-ep-xeon/
 Xeon E7-4890v2 2014.02  4.3            59.9       2.8         155    30
-Power8 S814    2014.06  4.2            ??         3.7         200    64      # TDP taken from Power7+
+Power8 S814    2014.06  4.2            ??         3.7         200    64      # TDP taken from Power7Instinct
 Xeon E5-2667v3 2014.09  2.6            66.4       3.2         135    16
 Xeon E5-2690v3 2014.09  3.8            65.4       2.6         135    24
 Xeon E5-2699v3 2014.09  5.7            66.1       2.3         145    36
 Xeon E5-2699v4 2016.04  7.2            73.9       2.2         145    44
-Xeon Phi 7290  2016.06  ??             ??         1.5         245    272
 Power8         2016.08  8.0            ??         4.0         ??     96      # Freq. approximate, TDP unknown
-Epyc 7601      2017.06  19.2           ??         2.2         180    64
-Xeon Gold 6152 2017.07  ??             77.9       2.1         140    44
-Xeon Pl. 8180  2017.07  ??             83.6       2.5         205    56      # SpecInt 2017: 9.31
-Power9 AC922   2018.04  8.0            ??         3.4         190    88      # TDP taken from comparable Power9 processors
-Quadro GV100   2018.05  21.1           ??         1.2         250    80      # GPU; 80 SMs
+Epyc 7601      2017.06  19.2           65.6       2.2         180    64
+Xeon Gold 6152 2017.07  8.0            77.9       2.1         140    44
+Xeon Pl. 8180  2017.07  8.0            83.6       2.5         205    56
+Power9 AC922   2018.04  8.0            ??         3.4         190    88
+Quadro GV100   2018.05  21.1           ??         1.2         250    80
 Xeon Pl. 8280  2019.03  8.0            90.9       2.7         205    56      # SpecInt 2017: 10.1
 Epyc 7742      2019.08  39.5           78.3       2.25        225    128     # SpecInt 2017: 8.7
 Ryzen 3990X    2020.01  30.4           99.0       2.9         280    128     # SpecInt 2017: 11.0
-Xeon Gold 6258 2020.02  ??             97.2       2.7         205    56      # SpecInt 2017: 10.8
-M1             2020.09  16.0           ??         3.2          28     8
-Xeon Pl. 8380  2021.03  ??             105.3      2.3         290    80      # SpecInt 2017: 11.7
-M1 Max         2021.08  57.0           ??         3.2          30    10
-Instinct MI250   2021.09  58.2           ??         1.0         500    208     # GPU; 208 compute units
+Xeon Gold 6258 2020.02  8.0            97.2       2.7         205    56
+M1             2020.09  16.0           82.8       3.2          28     8      # SPECint2017 ≈9.2 × 9.0
+Xeon Pl. 8380  2021.03  10.2           105.3      2.3         270    80
+M1 Max         2021.08  57.0           83         3.2          30    10
+Instinct MI250 2021.09  58.2           ??         1.0         500    208
 Graviton 3     2021.09  55.0           ??         2.6         100    64
-Epyc 9654      2022.11  ??             ??         2.4         360    192     # AMD EPYC Genoa
-Xeon Max 9480  2023.01  ??             ??         1.9         350    112     # Intel Sapphire Rapids HBM
-Epyc 9754      2023.06  ??             ??         2.25        360    256     # AMD EPYC Bergamo
-M3 Max         2023.10  ??             ??         ??          ??     16
-Xeon 8592+     2023.12  ??             ??         1.9         350    128     # Intel Emerald Rapids
+M2             2022.06  20.0           ??         3.5          ??     8      # Apple: over 20B transistors; 8-core CPU
+Epyc 9654      2022.11  90.0           124.2      2.4         360    192     # SPECspeed2017_int_base=13.8 ×9
+Xeon Max 9480  2023.01  ??             122.4      1.9         350    112     # SPECspeed2017_int_base=13.6 ×9
+M2 Ultra       2023.06  134.0          ??         3.5          ??    24      # two M2 Max dies
+Xeon 8592+     2023.12  ??             128.7      1.9         350    128     # SPECspeed2017_int_base=14.3 ×9
+M3 Max         2023.10  92.0           106.2      ??          ??     16      # SPECint2017=11.8 × 9
+Xeon 8592+     2023.12  ??             128.7      1.9         350    128     # SPECspeed2017_int_base=14.3 ×9
 Xeon 6980P     2024.09  ??             ??         2.0         500    256     # Intel Granite Rapids
 Epyc 9965      2024.10  ??             ??         2.25        500    384     # AMD EPYC Turin
 M4 Max         2024.10  ??             ??         ??          ??     16
-Epyc 9575F     2025.03  ??             ??         3.3         400    128     # AMD EPYC Turin high-frequency
+Epyc 9575F     2025.03  ??             191.7      3.3         400    128     # SPECspeed2017_int_base=21.3 ×9
+M3 Ultra        2025.03  184.0          ??         ??          ??     32      # Apple: 184B transistors; 32-core CPU (24P + 8E); two M3 Max dies via UltraFusion
+M5             2025.10  ??             138.6      4.6         ??     10      # 10 CPU cores (4P+6E), no SMT; SPECint2017≈15.4 ×9; transistor count/TDP unpublished
+NVIDIA A100       2020.05  54.2   ??   ??    400   ??   # GPU; GA100; SXM4 400W
+NVIDIA H100       2022.03  80.0   ??   ??    700   ??   # GPU; GH100; SXM5 700W
+NVIDIA H200       2023.11  80.0   ??   ??    700   ??   # GPU; GH100/Hopper; HBM3e refresh
+Instinct MI300X   2023.12 153.0   ??   ??    750   ??   # GPU; CDNA3; 192GB HBM3
+NVIDIA B200       2024.03 208.0   ??   ??   1000   ??   # GPU; Blackwell dual-die package
+Instinct MI325X   2024.10 153.0   ??   ??   1000   ??   # GPU; CDNA3; 256GB HBM3e refresh
+NVIDIA B300       2025.03 208.0   ??   ??   1400   ??   # GPU; Blackwell Ultra; 288GB HBM3e
+Instinct MI350X   2025.06 185.0   ??   ??   1000   ??   # GPU; CDNA4; air-cooled
+Instinct MI355X   2025.06 185.0   ??   ??   1400   ??   # GPU; CDNA4; liquid-cooled
