@@ -332,11 +332,6 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         'processor points to inspect details.</desc>'
     )
     elements.append(f'<text x="{PLOT_X}" y="26" class="title">Microprocessor Trend Data</text>')
-    elements.append(
-        f'<text x="{PLOT_X}" y="{HEIGHT - 22}" class="source">'
-        "Background points come from 50yrs/*.dat; interactive named points come from newdata.txt."
-        "</text>"
-    )
 
     # Plot area and grid.
     elements.append(
