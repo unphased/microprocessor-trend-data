@@ -64,3 +64,8 @@ Instinct MI325X   2024.10 153.0   ??   ??   1000   ??   # GPU; CDNA3; 256GB HBM3
 NVIDIA B300       2025.03 208.0   ??   ??   1400   ??   # GPU; Blackwell Ultra; 288GB HBM3e
 Instinct MI350X   2025.06 185.0   ??   ??   1000   ??   # GPU; CDNA4; air-cooled
 Instinct MI355X   2025.06 185.0   ??   ??   1400   ??   # GPU; CDNA4; liquid-cooled
+Graviton       2018.11  ??             ??         2.3         ??     16      # AWS Graviton1; 16 Cortex-A72 cores; no SMT
+Graviton 2     2019.12  ??             ??         2.5         ??     64      # 64 Neoverse N1 cores; no SMT
+Graviton 3     2021.11  55.0           ??         2.6         100    64      # 64 Neoverse V1 cores; no SMT; transistor/TDP not official
+Graviton 3E    2022.11  ??             ??         2.6         ??     64      # HPC/network-tuned Graviton3 variant
+Graviton 4     2023.11  ??             ??         2.8         ??     96      # 96 Neoverse V2 cores; no SMT
