@@ -44,7 +44,7 @@ Xeon Pl. 8380  2021.03  10.2           105.3      2.3         270    80
 M1 Max         2021.08  57.0           83         3.2         ~30    10      # EST CPU-side/package power under CPU load; Apple does not publish TDP, and full SoC power with GPU/media can be much higher
 Instinct MI250 2021.09  58.2           ??         1.0         500    208
 Graviton 3     2021.09  55.0           ??         2.6         100    64
-M2             2022.06  20.0           ??         3.5          ??     8      # Apple: over 20B transistors; 8-core CPU
+M2             2022.06  20.0           ??         3.5         ~20     8      # EST chip power under CPU/GPU compute load; Apple does not publish TDP; Apple: over 20B transistors; 8-core CPU
 Epyc 9654      2022.11  90.0           124.2      2.4         360    192     # SPECspeed2017_int_base=13.8 ×9
 Xeon Max 9480  2023.01  ~46            122.4      1.9         350    112     # EST transistors from public Sapphire Rapids package estimates (44-48B); SPECspeed2017_int_base=13.6 ×9
 M2 Ultra       2023.06  134.0          ??         3.5          ??    24      # two M2 Max dies
