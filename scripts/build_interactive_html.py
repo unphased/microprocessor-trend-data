@@ -56,13 +56,13 @@ SERIES = {
     },
 }
 
-WIDTH = 960
+WIDTH = 1180
 HEIGHT = 560
 PLOT_X = 76
 PLOT_Y = 42
-PLOT_W = 710
+PLOT_W = 760
 PLOT_H = 424
-LEGEND_X = 812
+LEGEND_X = 875
 
 
 @dataclass
@@ -76,6 +76,13 @@ class ProcessorRow:
     tdp: str
     threads: str
     note: str = ""
+
+
+@dataclass(frozen=True)
+class MetricReading:
+    value: Decimal | None
+    display: str
+    estimated: bool
 
 
 def parse_args() -> argparse.Namespace:
@@ -158,34 +165,36 @@ def parse_dat(path: Path) -> list[tuple[float, float]]:
     return points
 
 
-def metric_value(row: ProcessorRow, field: str, scale: Decimal) -> str | None:
-    raw = getattr(row, field)
+def metric_reading(row: ProcessorRow, key: str) -> MetricReading:
+    series = SERIES[key]
+    raw = getattr(row, str(series["field"]))
     if raw == "??":
-        return None
+        return MetricReading(None, "unknown", False)
 
-    return format_decimal(Decimal(raw) * scale)
+    estimated = raw.startswith("~")
+    numeric_text = raw[1:] if estimated else raw
+    value = Decimal(numeric_text)
+    prefix = "~" if estimated else ""
+
+    if key == "transistors":
+        display = f"{prefix}{numeric_text}B"
+    elif key == "frequency":
+        display = f"{prefix}{numeric_text} GHz"
+    elif key == "power":
+        display = f"{prefix}{numeric_text} W"
+    else:
+        display = f"{prefix}{numeric_text}"
+
+    return MetricReading(value * Decimal(str(series["scale"])), display, estimated)
 
 
 def known_metric(row: ProcessorRow, key: str) -> float | None:
-    series = SERIES[key]
-    value = metric_value(row, series["field"], series["scale"])
-    return float(value) if value is not None else None
+    reading = metric_reading(row, key)
+    return float(reading.value) if reading.value is not None else None
 
 
 def source_value(row: ProcessorRow, key: str) -> str:
-    field = SERIES[key]["field"]
-    raw = getattr(row, field)
-    if raw == "??":
-        return "unknown"
-    if key == "transistors":
-        return f"{raw}B"
-    if key == "frequency":
-        return f"{raw} GHz"
-    if key == "power":
-        return f"{raw} W"
-    if key == "specint":
-        return raw
-    return raw
+    return metric_reading(row, key).display
 
 
 def collect_named_points(rows: list[ProcessorRow]) -> list[dict[str, object]]:
@@ -203,10 +212,20 @@ def collect_named_points(rows: list[ProcessorRow]) -> list[dict[str, object]]:
             "cores": source_value(row, "cores"),
             "note": row.note,
         }
+        estimate_fields = [
+            key
+            for key, series in SERIES.items()
+            if metric_reading(row, key).estimated
+        ]
+        details["estimates"] = ", ".join(
+            str(SERIES[key]["label"]).split(" (", 1)[0].lower()
+            for key in estimate_fields
+        )
         for key in SERIES:
             value = known_metric(row, key)
             if value is None:
                 continue
+            reading = metric_reading(row, key)
             points.append(
                 {
                     "id": f"{row_id}-{key}",
@@ -214,6 +233,8 @@ def collect_named_points(rows: list[ProcessorRow]) -> list[dict[str, object]]:
                     "metric": key,
                     "year": float(row.chart_year),
                     "value": value,
+                    "displayValue": reading.display,
+                    "estimated": reading.estimated,
                     "details": details,
                 }
             )
@@ -282,6 +303,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         .cpu-point { cursor: pointer; stroke: #ffffff; stroke-width: 1.5; transition: r 120ms ease, opacity 120ms ease, stroke-width 120ms ease; }
         .cpu-point:hover, .cpu-point:focus, .cpu-point.is-active { r: 6.5; opacity: 1; stroke-width: 2; outline: none; }
         .cpu-point.is-related { r: 5.5; opacity: 1; }
+        .estimate-ring { fill: none; stroke: #1f2328; stroke-width: 1.5; stroke-dasharray: 2.5 2.5; pointer-events: none; }
         #tooltip-panel { filter: drop-shadow(0 8px 20px rgba(30, 35, 40, 0.18)); pointer-events: none; }
         .tooltip-box { fill: #ffffff; stroke: #aeb6c2; stroke-width: 1; }
         .tooltip-title { fill: #1f2328; font-size: 13px; font-weight: 700; }
@@ -294,6 +316,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
           .tooltip-title { fill: #f1f3f4; }
           .tooltip-line { fill: #d7dce2; }
           .cpu-point { stroke: #111418; }
+          .estimate-ring { stroke: #f1f3f4; }
         }
         """
     )
@@ -365,15 +388,22 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         point_id = str(point["id"])
         series = SERIES[metric]
         point_data[point_id] = point
+        aria_value = str(point["displayValue"])
+        if point["estimated"]:
+            aria_value = f"{aria_value} estimate"
         aria = (
             f'{point["details"]["name"]}, {series["label"]}, '
-            f'{format_decimal(Decimal(str(point["value"])))}'
+            f"{aria_value}"
         )
         elements.append(
             f'<circle id="{esc(point_id)}" class="cpu-point" tabindex="0" role="button" '
             f'aria-label="{esc(aria)}" data-point-id="{esc(point_id)}" data-row-id="{esc(row_id)}" '
             f'cx="{x:.2f}" cy="{y:.2f}" r="4.5" fill="{series["color"]}" />'
         )
+        if point["estimated"]:
+            elements.append(
+                f'<circle class="estimate-ring" cx="{x:.2f}" cy="{y:.2f}" r="7.4" />'
+            )
 
     # Legend.
     for index, (key, series) in enumerate(SERIES.items()):
@@ -386,6 +416,11 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
     elements.append(
         f'<text x="{LEGEND_X}" y="270" class="legend-text">'
         "Hover/focus a colored dot for CPU details.</text>"
+    )
+    elements.append(
+        f'<circle class="estimate-ring" cx="{LEGEND_X + 5}" cy="296" r="7.4" />'
+        f'<text x="{LEGEND_X + 20}" y="300" class="legend-text">'
+        "Dashed rings mark tilde-prefixed estimates.</text>"
     )
 
     elements.append('<g id="tooltip-panel" visibility="hidden"></g>')
@@ -434,6 +469,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         }}
 
         function metricTooltipValue(point) {{
+          if (point.estimated) return `${{point.displayValue}} (estimate)`;
           if (point.metric === "transistors") return point.details.transistors;
           return Number(point.value).toLocaleString();
         }}
@@ -452,6 +488,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
             `Logical cores: ${{details.cores}}`
           ];
           if (point.metric !== "transistors") rows.splice(2, 0, `Transistors: ${{details.transistors}}`);
+          if (details.estimates) rows.push(`Estimated fields: ${{details.estimates}}`);
           if (details.note) rows.push(details.note);
 
           svg.querySelectorAll(".cpu-point").forEach((el) => {{
@@ -498,7 +535,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
     )
     elements.append("]]></script>")
     elements.append("</svg>")
-    return "\n".join(elements)
+    return "\n".join(line.rstrip() for line in "\n".join(elements).splitlines())
 
 
 def build_html(svg: str) -> str:
@@ -520,7 +557,7 @@ def build_html(svg: str) -> str:
       min-width: 320px;
     }}
     main {{
-      max-width: 1120px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 16px;
     }}
@@ -531,7 +568,7 @@ def build_html(svg: str) -> str:
     svg {{
       display: block;
       width: 100%;
-      min-width: 760px;
+      min-width: 960px;
       height: auto;
     }}
     @media (prefers-color-scheme: dark) {{

@@ -69,3 +69,4 @@ Graviton 2     2019.12  ??             ??         2.5         ??     64      # 6
 Graviton 3     2021.11  55.0           ??         2.6         100    64      # 64 Neoverse V1 cores; no SMT; transistor/TDP not official
 Graviton 3E    2022.11  ??             ??         2.6         ??     64      # HPC/network-tuned Graviton3 variant
 Graviton 4     2023.11  ??             ??         2.8         ??     96      # 96 Neoverse V2 cores; no SMT
+Graviton 5     2026.06  ~150           ~120       3.1         ??     192     # EST transistor/specint/freq; TDP unpublished
