@@ -272,7 +272,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
     elements.append(
         """
         .processor-trends { background: #ffffff; color: #202124; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-        .title { font-size: 22px; font-weight: 700; }
+        .title { fill: currentColor; font-size: 22px; font-weight: 700; }
         .subtitle, .axis-label, .legend-text, .source { fill: #555b61; font-size: 12px; }
         .axis, .grid { stroke: #c9ced6; stroke-width: 1; }
         .grid { stroke-dasharray: 2 6; }
