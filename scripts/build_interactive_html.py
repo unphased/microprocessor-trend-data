@@ -57,12 +57,12 @@ SERIES = {
 }
 
 WIDTH = 1180
-HEIGHT = 560
+HEIGHT = 640
 PLOT_X = 76
 PLOT_Y = 42
-PLOT_W = 760
+PLOT_W = 1060
 PLOT_H = 424
-LEGEND_X = 875
+LEGEND_Y = 536
 
 
 @dataclass
@@ -244,7 +244,11 @@ def collect_named_points(rows: list[ProcessorRow]) -> list[dict[str, object]]:
 def log_ticks(y_min: float, y_max: float) -> list[float]:
     start = math.floor(math.log10(y_min))
     end = math.ceil(math.log10(y_max))
-    return [10**power for power in range(start, end + 1)]
+    return [
+        10**power
+        for power in range(start, end + 1)
+        if y_min <= 10**power <= y_max
+    ]
 
 
 def axis_ticks(x_min: float, x_max: float) -> list[int]:
@@ -298,7 +302,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
         .axis, .grid { stroke: #c9ced6; stroke-width: 1; }
         .grid { stroke-dasharray: 2 6; }
         .tick-label { fill: #555b61; font-size: 11px; }
-        .series-label { font-size: 12px; font-weight: 650; }
+        .series-label { font-size: 11px; font-weight: 650; }
         .background-point { opacity: 0.24; }
         .cpu-point { cursor: pointer; stroke: #ffffff; stroke-width: 1.5; transition: r 120ms ease, opacity 120ms ease, stroke-width 120ms ease; }
         .cpu-point:hover, .cpu-point:focus, .cpu-point.is-active { r: 6.5; opacity: 1; stroke-width: 2; outline: none; }
@@ -360,7 +364,7 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
             f'<text x="{PLOT_X - 10}" y="{y + 4:.2f}" text-anchor="end" class="tick-label">{esc(label)}</text>'
         )
     elements.append(
-        f'<text x="{PLOT_X + PLOT_W / 2:.2f}" y="{HEIGHT - 58}" text-anchor="middle" class="axis-label">Year</text>'
+        f'<text x="{PLOT_X + PLOT_W / 2:.2f}" y="{PLOT_Y + PLOT_H + 48}" text-anchor="middle" class="axis-label">Year</text>'
     )
     elements.append(
         f'<text x="18" y="{PLOT_Y + PLOT_H / 2:.2f}" transform="rotate(-90 18 {PLOT_Y + PLOT_H / 2:.2f})" '
@@ -406,20 +410,21 @@ def build_svg(rows: list[ProcessorRow], background: dict[str, list[tuple[float, 
             )
 
     # Legend.
+    legend_columns = [0, 160, 335, 645, 860]
     for index, (key, series) in enumerate(SERIES.items()):
-        y = 78 + index * 34
+        x = PLOT_X + legend_columns[index]
         elements.append(
-            f'<circle cx="{LEGEND_X}" cy="{y}" r="5" fill="{series["color"]}" />'
-            f'<text x="{LEGEND_X + 14}" y="{y + 4}" class="series-label" fill="{series["color"]}">'
+            f'<circle cx="{x}" cy="{LEGEND_Y}" r="5" fill="{series["color"]}" />'
+            f'<text x="{x + 14}" y="{LEGEND_Y + 4}" class="series-label" fill="{series["color"]}">'
             f'{esc(series["label"])}</text>'
         )
     elements.append(
-        f'<text x="{LEGEND_X}" y="270" class="legend-text">'
+        f'<text x="{PLOT_X}" y="{LEGEND_Y + 38}" class="legend-text">'
         "Hover/focus a colored dot for CPU details.</text>"
     )
     elements.append(
-        f'<circle class="estimate-ring" cx="{LEGEND_X + 5}" cy="296" r="7.4" />'
-        f'<text x="{LEGEND_X + 20}" y="300" class="legend-text">'
+        f'<circle class="estimate-ring" cx="{PLOT_X + 282}" cy="{LEGEND_Y + 34}" r="7.4" />'
+        f'<text x="{PLOT_X + 300}" y="{LEGEND_Y + 38}" class="legend-text">'
         "Dashed rings mark tilde-prefixed estimates.</text>"
     )
 
