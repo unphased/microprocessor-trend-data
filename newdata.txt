@@ -39,24 +39,19 @@ Xeon Pl. 8280  2019.03  8.0            90.9       2.7         205    56      # S
 Epyc 7742      2019.08  39.5           78.3       2.25        225    128     # SpecInt 2017: 8.7
 Ryzen 3990X    2020.01  30.4           99.0       2.9         280    128     # SpecInt 2017: 11.0
 Xeon Gold 6258 2020.02  8.0            97.2       2.7         205    56
-M1             2020.09  16.0           82.8       3.2          28     8      # SPECint2017 ≈9.2 × 9.0
 Xeon Pl. 8380  2021.03  10.2           105.3      2.3         270    80
 M1 Max         2021.08  57.0           83         3.2         ~30    10      # EST CPU-side/package power under CPU load; Apple does not publish TDP, and full SoC power with GPU/media can be much higher
 Instinct MI250 2021.09  58.2           ??         1.0         500    208
-Graviton 3     2021.09  55.0           ??         2.6         100    64
-M2             2022.06  20.0           ??         3.5         ~20     8      # EST chip power under CPU/GPU compute load; Apple does not publish TDP; Apple: over 20B transistors; 8-core CPU
 Epyc 9654      2022.11  90.0           124.2      2.4         360    192     # SPECspeed2017_int_base=13.8 ×9
 Xeon Max 9480  2023.01  ~46            122.4      1.9         350    112     # EST transistors from public Sapphire Rapids package estimates (44-48B); SPECspeed2017_int_base=13.6 ×9
 M2 Ultra       2023.06  134.0          ??         3.5          ??    24      # two M2 Max dies
 Xeon 8592+     2023.12  ??             128.7      1.9         350    128     # SPECspeed2017_int_base=14.3 ×9
 M3 Max         2023.10  92.0           106.2      ~4.05       ??     16      # EST freq from reported M3 Max P-core clock; SPECint2017=11.8 × 9
-Xeon 8592+     2023.12  ??             128.7      1.9         350    128     # SPECspeed2017_int_base=14.3 ×9
 Xeon 6980P     2024.09  ??             ??         2.0         500    256     # Intel Granite Rapids
 Epyc 9965      2024.10  ??             ??         2.25        500    384     # AMD EPYC Turin
 M4 Max         2024.10  ??             ??         ~4.5        ??     16      # EST freq from reported M4 Max P-core clock; transistor count/TDP unpublished
 Epyc 9575F     2025.03  ??             191.7      3.3         400    128     # SPECspeed2017_int_base=21.3 ×9
 M3 Ultra        2025.03  184.0          ~106.2     ~4.05       ??     32      # EST SpecInt/freq from M3 Max same-core single-thread behavior; Apple: 184B transistors; 32-core CPU (24P + 8E); two M3 Max dies via UltraFusion
-M5             2025.10  ??             138.6      4.6         ??     10      # 10 CPU cores (4P+6E), no SMT; SPECint2017≈15.4 ×9; transistor count/TDP unpublished
 NVIDIA Tesla M40 2015.11  8.0    ??   1.114  250   ??   # GPU; GM200/Maxwell; 3072 CUDA cores; boost clock; deep-learning inference SKU
 NVIDIA A100       2020.05  54.2   ??   ??    400   ??   # GPU; GA100; SXM4 400W
 NVIDIA H100       2022.03  80.0   ??   ??    700   ??   # GPU; GH100; SXM5 700W
